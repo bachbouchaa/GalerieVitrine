@@ -1,0 +1,49 @@
+{# templates/painting/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Painting: {{ painting.title }}{% endblock %}
+
+{% block body %}
+    <h1>Painting Details: {{ painting.title }}</h1>
+
+    {# Affichage des informations détaillées du painting #}
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ painting.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ painting.title }}</td>
+            </tr>
+            <tr>
+                <th>Artist</th>
+                <td>{{ painting.artist }}</td>
+            </tr>
+            <tr>
+                <th>Year of Creation</th>
+                <td>{{ painting.creationYear }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ painting.description }}</td>
+            </tr>
+            <tr>
+                <th>Style</th>
+                <td>{{ painting.style }}</td>
+            </tr>
+            <tr>
+                <th>Collection</th>
+                <td>
+                    <a href="{{ path('painting_collection_show', {'id': painting.myPaintingCollection.id}) }}">
+                        {{ painting.myPaintingCollection.name }}
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('collection_list') }}">Back to list of collections</a>
+{% endblock %}

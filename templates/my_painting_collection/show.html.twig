@@ -1,0 +1,40 @@
+{# templates/my_painting_collection/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Collection de Peintures: {{ collection.name }}{% endblock %}
+
+{% block body %}
+    <h1>Collection: {{ collection.name }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ collection.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ collection.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ collection.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Peintures dans cette collection</h2>
+    <ul>
+        {# Boucle sur chaque tableau de peinture associé à cette collection #}
+        {% for painting in collection.paintings %}
+            <li>
+                <a href="{{ path('painting_show', {'id': painting.id}) }}">{{ painting.title }} par {{ painting.artist }}</a>
+            </li>
+        {% else %}
+            <li>Aucune peinture n'est disponible dans cette collection.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('collection_list') }}">Retour à la liste des collections</a>
+{% endblock %}

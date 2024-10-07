@@ -6,17 +6,19 @@ use App\Entity\MyPaintingCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 class MyPaintingCollectionController extends AbstractController
 {
     #[Route('/my/painting/collection', name: 'app_my_painting_collection')]
     public function index(): Response
     {
+        // Lorsque tout se passe bien, nous renvoyons une réponse HTTP avec le contenu approprié.
         return $this->render('my_painting_collection/index.html.twig', [
             'controller_name' => 'MyPaintingCollectionController',
         ]);
     }
+
     /**
      * Lists all MyPaintingCollection entities.
      */
@@ -40,7 +42,7 @@ class MyPaintingCollectionController extends AbstractController
 
         foreach ($collections as $collection) {
             // Generate URL for each collection's details (assuming a route named 'collection_show' exists)
-            $url = $this->generateUrl('collection_show', ['id' => $collection->getId()]);
+            $url = $this->generateUrl('painting_collection_show', ['id' => $collection->getId()]);
             $htmlpage .= '<li><a href="' . $url . '">' . htmlspecialchars($collection->getName()) . '</a></li>';
         }
 
@@ -48,6 +50,7 @@ class MyPaintingCollectionController extends AbstractController
     </body>
 </html>';
 
+        // Lorsque tout se passe bien, nous renvoyons une réponse HTTP 200 (OK).
         return new Response(
             $htmlpage,
             Response::HTTP_OK,
@@ -56,35 +59,23 @@ class MyPaintingCollectionController extends AbstractController
     }
 
     /**
-     * Lists a MyPaintingCollection entitie.
+     * Shows the details of a single MyPaintingCollection entity.
      */
-    #[Route('/collections/{id}', name: 'collection_show', methods: ['GET'])]
+    #[Route('/painting/collection/{id}', name: 'painting_collection_show', methods: ['GET'])]
     public function show(ManagerRegistry $doctrine, int $id): Response
     {
         $entityManager = $doctrine->getManager();
         $collection = $entityManager->getRepository(MyPaintingCollection::class)->find($id);
-
+        
+        // Si la collection n'existe pas, nous levons une exception qui renverra une réponse HTTP 404 (Not Found).
         if (!$collection) {
             throw $this->createNotFoundException('The collection does not exist');
         }
-
-        $htmlpage = '<!DOCTYPE html>
-    <html>
- <head>
-     <meta charset="UTF-8">
-     <title>Collection Details</title>
- </head>
- <body>
-     <h1>Collection: ' . htmlspecialchars($collection->getName()) . '</h1>
-     <p>Description: ' . htmlspecialchars($collection->getDescription()) . '</p>
-     <a href="' . $this->generateUrl('collection_list') . '">Back to list</a>
- </body>
-</html>';
-
-        return new Response(
-            $htmlpage,
-            Response::HTTP_OK,
-            ['content-type' => 'text/html']
-        );
+        
+        // Lorsque tout se passe bien, nous rendons la vue Twig.
+        return $this->render('my_painting_collection/show.html.twig', [
+            'collection' => $collection,
+        ]);
     }
 }
+

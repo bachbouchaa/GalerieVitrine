@@ -71,7 +71,7 @@ Le projet contient deux principales entités :
 
 ### Exemple d'Utilisation des Routes
 - Accéder à la liste des collections : `http://localhost:8000/`
-- Afficher une collection particulière : `http://localhost:8000/collections/{id}`
+- Afficher une collection particulière : `http://localhost:8000/painting/collection/{id}`
 
 
 ## Auteurs
