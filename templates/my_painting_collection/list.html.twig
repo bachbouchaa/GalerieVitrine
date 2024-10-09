@@ -1,0 +1,23 @@
+{# templates/my_painting_collection/list.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Painting Collections List{% endblock %}
+
+{% block body %}
+    <h1>Liste de collections de tableaux </h1>
+    <p>Collections disponibles </p>
+
+    <ul>
+        {% for collection in collections %}
+            <li>
+                <a href="{{ path('painting_collection_show', {'id': collection.id}) }}">
+                    {{ collection.name }}
+                </a>
+            </li>
+        {% else %}
+            <li>No collections available at the moment.</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

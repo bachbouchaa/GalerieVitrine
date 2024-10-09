@@ -5,7 +5,7 @@
 {% block title %}Painting: {{ painting.title }}{% endblock %}
 
 {% block body %}
-    <h1>Painting Details: {{ painting.title }}</h1>
+    <h1>Fiche du tableau: {{ painting.title }}</h1>
 
     {# Affichage des informations détaillées du painting #}
     <table class="table">
@@ -45,5 +45,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('collection_list') }}">Back to list of collections</a>
+    <a href="{{ path('collection_list') }}">Retour à la liste des collections</a>
 {% endblock %}

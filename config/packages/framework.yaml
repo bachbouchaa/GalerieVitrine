@@ -1,7 +1,8 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
-    annotations: false
+    annotations:
+        enabled: false
     http_method_override: false
     handle_all_throwables: true
 
@@ -12,11 +13,15 @@ framework:
         cookie_secure: auto
         cookie_samesite: lax
 
-    #esi: true
-    #fragments: true
+    # Enable PHP error logging
     php_errors:
         log: true
 
+    # Configure asset paths
+    assets:
+        base_path: '/startbootstrap-shop-homepage-gh-pages'
+
+# Configuration specific to the test environment
 when@test:
     framework:
         test: true

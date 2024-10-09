@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PaintingController extends AbstractController
 {
-    #[Route('/painting/{id}', name: 'painting_show', methods: ['GET'])]
+    #[Route('/painting/{id}', name: 'painting_show', methods: ['GET'],requirements: ['id' => '\d+'])]
     public function show(ManagerRegistry $doctrine, int $id): Response
     {
         // Récupération de l'entité `Painting` par son identifiant

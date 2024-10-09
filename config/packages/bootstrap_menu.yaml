@@ -1,0 +1,7 @@
+bootstrap_menu:
+  menus:
+    main:
+      items:
+        collections:
+          label: 'Collections'
+          route: 'collection_list' # Route pour la liste des collections

@@ -8,7 +8,8 @@ Galerie Vitrine est une application web créée avec le framework Symfony, perme
 - Liste de toutes les collections de peintures.
 - Vue détaillée de chaque collection.
 - Vue détaillée de chaque tableau de peinture dans la collection.
-- Application basée sur Symfony 6.
+- Navigation entre les tableaux et leurs collections associées.
+- Application basée sur Symfony 5 (ou plus récent).
 
 ## Prérequis
 Pour exécuter ce projet localement, vous devez avoir installé les éléments suivants :
@@ -48,7 +49,7 @@ Suivez ces étapes pour cloner et exécuter le projet sur votre machine :
    - Utilisez les fixtures fournies pour remplir la base de données avec des collections et des peintures d'exemple :
 
    ```bash
-   symfony console doctrine:fixtures:load -n
+   symfony console doctrine:fixtures:load
    ```
 
 6. **Lancer le Serveur de Développement** :
@@ -64,14 +65,19 @@ Le projet contient deux principales entités :
 
 ### Relations
 - **MyPaintingCollection** et **Painting** ont une relation **OneToMany**. Chaque collection peut contenir plusieurs tableaux.
+- Chaque tableau est associé à une collection, permettant de naviguer entre eux.
 
 ## Routes Disponibles
 - **`/`** : Liste de toutes les collections de peinture.
-- **`/collections/{id}`** : Affiche les détails d'une collection spécifique.
+- **`painting/collection/{id}`** : Affiche les détails d'une collection spécifique.
+- **`/painting/{id}`** : Affiche les détails d'un tableau spécifique, avec un lien vers la collection à laquelle il appartient.
+
 
 ### Exemple d'Utilisation des Routes
 - Accéder à la liste des collections : `http://localhost:8000/`
 - Afficher une collection particulière : `http://localhost:8000/painting/collection/{id}`
+- Afficher les détails d'une peinture et revenir à la collection associée : `http://localhost:8000/painting/{id}`
+
 
 
 ## Auteurs
