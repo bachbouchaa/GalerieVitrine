@@ -1,6 +1,9 @@
 
 # Galerie Vitrine
 
+## Auteur
+- **Nermine Bacha** - Développeur principal.
+
 ## Introduction
 Galerie Vitrine est une application web créée avec le framework Symfony, permettant de gérer une collection de tableaux de peinture. Les utilisateurs peuvent parcourir différentes collections d'art, consulter les détails de chaque tableau, et découvrir diverses périodes artistiques comme la Renaissance, l'Art Moderne, et l'Impressionnisme.
 
@@ -9,7 +12,6 @@ Galerie Vitrine est une application web créée avec le framework Symfony, perme
 - Vue détaillée de chaque collection.
 - Vue détaillée de chaque tableau de peinture dans la collection.
 - Navigation entre les tableaux et leurs collections associées.
-- Application basée sur Symfony 5 (ou plus récent).
 
 ## Prérequis
 Pour exécuter ce projet localement, vous devez avoir installé les éléments suivants :
@@ -79,9 +81,3 @@ Le projet contient deux principales entités :
 - Afficher les détails d'une peinture et revenir à la collection associée : `http://localhost:8000/painting/{id}`
 
 
-
-## Auteurs
-- **Nermine Bacha** - Développeur principal.
-
-## Remerciements
-Un grand merci à tous ceux qui ont contribué au développement de Symfony et à la communauté open-source pour leur soutien.

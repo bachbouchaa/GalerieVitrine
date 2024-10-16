@@ -1,0 +1,56 @@
+
+1. Étape proj-1 : Démarrage du projet Symfony
+1.1. Étape proj-1-a : Prise de connaissance du cahier des charges de l’application ✅
+1.2. Choix du domaine fonctionnel ✅
+1.3. Étape proj-1-b : Initialisation du répertoire de travail du projet ✅
+1.4. Configuration de Git ✅
+1.5. Création du projet Symfony ✅
+1.5.1. Suppression de bundles inutiles ✅
+1.5.2. Chargement dans l’IDE ✅
+1.6. Étape proj-1-c : Tests de lancement de l’application ✅
+1.7. Étape proj-1-d : Mise à jour du référentiel Git ✅
+
+2. Étape proj-2 : Génération des premières entités du modèle de données
+2.1. Méthodologie : travail incrémental ✅
+2.2. Préparation de l’ajout des premières entités ✅
+2.2.1. Liste des propriétés des entités du modèle ✅
+2.2.2. Associations entre entités ✅
+2.3. Étape proj-2-a : Création ou mise à jour du schéma de la base de données ✅
+2.3.1. Fonctionnement du générateur de code make:entity ✅
+2.3.2. Chargement de données de tests avec les Fixtures ✅
+2.4. Étape proj-2-b : Configuration du type de base de données de tests ✅
+2.5. Étape proj-2-c : Ajoutez le support des DataFixtures ✅
+2.6. Étape proj-2-d : Création des premières entités ✅
+
+3. Étape proj-3 : Création des premières pages publiques, en consultation
+3.1. Méthodologie pour la génération du code pour ajouter des pages en consultation ✅
+3.2. Étape proj3-a : Ajout d’un premier Contrôleur pour MyPaintingCollection ✅
+3.3. Étape proj3-b : Ajout de la méthode d’affichage de la liste des collections ✅
+3.4. Étape proj3-c : Ajout de la consultation d'une collection ✅
+3.5. Étape proj3-d : Ajout du lien de consultation, à partir de l’affichage de la liste ✅
+
+4. Ajout des gabarits dans les pages
+4.1. Ajout d’un gabarit pour l’affichage d’une collection dans le front-office ✅
+4.2. Ajout de l’affichage des paintings dans une collection ✅
+
+5. Ajout d'habillage CSS dans les gabarits
+5.1. Téléchargement de « Start Bootstrap - Shop Homepage » ✅
+5.2. Intégration de Bootstrap dans vos templates ✅
+5.3. Intégration des menus pour Bootstrap ✅
+
+6. Ajout au modèle de données de l’entité membre et du lien membre - collection
+6.1. Ajout du code de chargement des données de test des membres
+
+7. Ajout de l’entité galerie au modèle des données
+8. Génération d’un nouveau contrôleur CRUD au front-office, pour galerie
+8.1. Génération du code du Contrôleur pour galerie
+8.2. Ajout de la consultation de la liste des paintings d’une galerie
+
+9. État des lieux des contrôleurs
+10. Contextualisation de la consultation des paintings depuis les collections publiques
+11. Ajout des données de tests dans les Fixtures
+
+12. Ajout de l’authentification
+12.1. Ajout d'un contrôleur pour l'entité membre
+13. Ajout de contrôle d’accès effectif (optionnel)
+13.1. Accès aux collections non publiques
