@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Painting{% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Edit Painting</h1>
+
+        <div class="card p-4 mb-4">
+            {{ form_start(form) }}
+                {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.artist, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.creationYear, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.style, {'attr': {'class': 'form-control'}}) }}
+                
+                <button type="submit" class="btn btn-primary mt-3">{{ button_label|default('Update') }}</button>
+            {{ form_end(form) }}
+        </div>
+
+        <a href="{{ path('app_painting_index') }}" class="btn btn-secondary mt-2">Back to List</a>
+
+        <div class="mt-3">
+            {{ include('painting/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

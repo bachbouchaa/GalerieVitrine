@@ -24,7 +24,11 @@
                 <td>
                     <ul>
                         {% for painting in gallery.paintings %}
-                            <li>{{ painting.title }} by {{ painting.artist }} ({{ painting.creationYear }})</li>
+                            <li>
+                                <a href="{{ path('app_gallery_painting_show', { 'gallery_id': gallery.id, 'painting_id': painting.id }) }}">
+                                    {{ painting.title }}
+                                </a>
+                            </li>
                         {% else %}
                             <li>No paintings available in this gallery.</li>
                         {% endfor %}

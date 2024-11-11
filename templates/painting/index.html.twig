@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Painting index{% endblock %}
+
+{% block body %}
+    <h1>Painting index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>CreationYear</th>
+                <th>Description</th>
+                <th>Style</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for painting in paintings %}
+            <tr>
+                <td>{{ painting.id }}</td>
+                <td>{{ painting.title }}</td>
+                <td>{{ painting.artist }}</td>
+                <td>{{ painting.creationYear }}</td>
+                <td>{{ painting.description }}</td>
+                <td>{{ painting.style }}</td>
+                <td>
+                    <a href="{{ path('app_painting_show', {'id': painting.id}) }}">show</a>
+                    <a href="{{ path('app_painting_edit', {'id': painting.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

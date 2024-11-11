@@ -2,10 +2,10 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Member;
 use App\Entity\MyPaintingCollection;
 use App\Entity\Painting;
 use App\Entity\Gallery;
-use App\Entity\Member;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -14,108 +14,89 @@ class AppFixtures extends Fixture
 {
     private UserPasswordHasherInterface $hasher;
 
-    private const RENAISSANCE_COLLECTION = 'renaissance-collection';
-    private const MODERN_COLLECTION = 'modern-collection';
-    private const IMPRESSIONIST_COLLECTION = 'impressionist-collection';
-
-    private const RENAISSANCE_GALLERY = 'renaissance-gallery';
-    private const MODERN_GALLERY = 'modern-gallery';
-
-    private const MEMBER_NERMINE = 'member-nermine';
-    private const MEMBER_KHALIL = 'member-khalil';
-
     public function __construct(UserPasswordHasherInterface $hasher)
     {
         $this->hasher = $hasher;
     }
 
-    private static function paintingCollectionDataGenerator()
-    {
-        yield ['Renaissance Collection', 'Collection of Renaissance era paintings', self::RENAISSANCE_COLLECTION];
-        yield ['Modern Collection', 'Collection of modern art paintings', self::MODERN_COLLECTION];
-        yield ['Impressionist Collection', 'Famous impressionist works', self::IMPRESSIONIST_COLLECTION];
-    }
-
-    private static function paintingsDataGenerator()
-    {
-        yield [self::RENAISSANCE_COLLECTION, 'Mona Lisa', 'Leonardo da Vinci', 1503, 'A portrait painting by Leonardo da Vinci', 'Renaissance'];
-        yield [self::MODERN_COLLECTION, 'Starry Night', 'Vincent van Gogh', 1889, 'A depiction of Van Gogh\'s dreamy interpretation of the night sky', 'Post-Impressionism'];
-        yield [self::MODERN_COLLECTION, 'The Persistence of Memory', 'Salvador Dalí', 1931, 'Surrealism painting by Salvador Dalí', 'Surrealism'];
-        yield [self::IMPRESSIONIST_COLLECTION, 'Impression, Sunrise', 'Claude Monet', 1872, 'Impressionist painting by Claude Monet', 'Impressionism'];
-    }
-
-    private static function galleriesDataGenerator()
-    {
-        yield ['Galerie des maîtres de la Renaissance', true, self::RENAISSANCE_GALLERY, self::MEMBER_NERMINE];
-        yield ['Art moderne et contemporain', false, self::MODERN_GALLERY, self::MEMBER_KHALIL];
-    }
-
-    private static function membersDataGenerator()
-    {
-        yield ['nermine@localhost', '123456', self::MEMBER_NERMINE];
-        yield ['khalil@localhost', '123456', self::MEMBER_KHALIL];
-    }
-
     public function load(ObjectManager $manager)
     {
-        // Load Members
-        foreach (self::membersDataGenerator() as [$email, $plainPassword, $memberReference]) {
+        // Member data with realistic painting details
+        $membersData = [
+            [
+                'email' => 'nermine@example.com',
+                'password' => '123456',
+                'paintings' => [
+                    ['title' => 'Mona Lisa', 'artist' => 'Leonardo da Vinci', 'year' => 1503],
+                    ['title' => 'Madonna of the Rocks', 'artist' => 'Leonardo da Vinci', 'year' => 1483],
+                    ['title' => 'Lady with an Ermine', 'artist' => 'Leonardo da Vinci', 'year' => 1489],
+                    ['title' => 'Vitruvian Man', 'artist' => 'Leonardo da Vinci', 'year' => 1490],
+                ]
+            ],
+            [
+                'email' => 'khalil@example.com',
+                'password' => '123456',
+                'paintings' => [
+                    ['title' => 'The Starry Night', 'artist' => 'Vincent van Gogh', 'year' => 1889],
+                    ['title' => 'Sunflowers', 'artist' => 'Vincent van Gogh', 'year' => 1888],
+                    ['title' => 'Wheatfield with Crows', 'artist' => 'Vincent van Gogh', 'year' => 1890],
+                    ['title' => 'Almond Blossoms', 'artist' => 'Vincent van Gogh', 'year' => 1890],
+                ]
+            ]
+        ];
+
+        foreach ($membersData as $memberData) {
+            // Create Member and hash password
             $member = new Member();
-            $password = $this->hasher->hashPassword($member, $plainPassword);
-            $member->setEmail($email);
-            $member->setPassword($password);
-
+            $member->setEmail($memberData['email']);
+            $member->setPassword($this->hasher->hashPassword($member, $memberData['password']));
             $manager->persist($member);
-            $this->addReference($memberReference, $member);
-        }
 
-        // Load Painting Collections
-        foreach (self::paintingCollectionDataGenerator() as [$name, $description, $collectionReference]) {
+            // Create a unique MyPaintingCollection for each Member
             $collection = new MyPaintingCollection();
-            $collection->setName($name)
-                       ->setDescription($description);
+            $collection->setName("Collection of {$memberData['email']}")
+                       ->setDescription("A private collection for {$memberData['email']}")
+                       ->setMember($member);
             $manager->persist($collection);
-            $manager->flush();
 
-            $this->addReference($collectionReference, $collection);
-        }
-
-        // Load Paintings
-        $paintings = [];
-        foreach (self::paintingsDataGenerator() as [$collectionReference, $title, $artist, $creationYear, $description, $style]) {
-            $collection = $this->getReference($collectionReference);
-
-            $painting = new Painting();
-            $painting->setTitle($title)
-                     ->setArtist($artist)
-                     ->setCreationYear($creationYear)
-                     ->setDescription($description)
-                     ->setStyle($style)
-                     ->setMyPaintingCollection($collection);
-
-            $manager->persist($painting);
-            $paintings[] = $painting;
-        }
-
-        // Load Galleries and associate paintings
-        foreach (self::galleriesDataGenerator() as [$description, $published, $galleryReference, $memberReference]) {
-            $gallery = new Gallery();
-            $gallery->setDescription($description)
-                    ->setPublished($published);
-
-            // Associate a few paintings with the gallery
-            foreach ($paintings as $painting) {
-                $gallery->addPainting($painting);
+            // Add Paintings to each Member's MyPaintingCollection
+            $paintings = [];
+            foreach ($memberData['paintings'] as $paintingInfo) {
+                $painting = new Painting();
+                $painting->setTitle($paintingInfo['title'])
+                         ->setArtist($paintingInfo['artist'])
+                         ->setCreationYear($paintingInfo['year'])
+                         ->setDescription("A masterpiece by {$paintingInfo['artist']}")
+                         ->setMyPaintingCollection($collection);
+                $manager->persist($painting);
+                $paintings[] = $painting; // Collect paintings for later association with galleries
             }
 
-            // Associate the gallery with a member
-            $member = $this->getReference($memberReference);
-            $gallery->setMember($member);
+            // Create Galleries for each Member and associate them with distinct Paintings
+            $gallery1 = new Gallery();
+            $gallery1->setDescription("Renaissance Highlights of {$memberData['email']}")
+                     ->setPublished(true)
+                     ->setMember($member);
+            
+            // Assign the first two paintings to gallery1
+            foreach (array_slice($paintings, 0, 2) as $painting) {
+                $gallery1->addPainting($painting);
+            }
+            $manager->persist($gallery1);
 
-            $manager->persist($gallery);
-            $this->addReference($galleryReference, $gallery);
+            $gallery2 = new Gallery();
+            $gallery2->setDescription("Special Collection of {$memberData['email']}")
+                     ->setPublished(false)
+                     ->setMember($member);
+
+            // Assign the last two paintings to gallery2
+            foreach (array_slice($paintings, 2, 2) as $painting) {
+                $gallery2->addPainting($painting);
+            }
+            $manager->persist($gallery2);
         }
 
         $manager->flush();
     }
 }
+

@@ -1,47 +1,61 @@
 <?php
 
+// src/Controller/GalleryController.php
+
 namespace App\Controller;
 
 use App\Entity\Gallery;
+use App\Entity\Member;
+use App\Entity\Painting;
 use App\Form\GalleryType;
 use App\Repository\GalleryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/gallery')]
 final class GalleryController extends AbstractController
 {
     #[Route(name: 'app_gallery_index', methods: ['GET'])]
     public function index(GalleryRepository $galleryRepository): Response
-    {
+    {   
+        // Retrieve only published galleries
+        $galleries = $galleryRepository->findBy(['published' => true]);
+        
         return $this->render('gallery/index.html.twig', [
-            'galleries' => $galleryRepository->findAll(),
+            'galleries' => $galleries,
         ]);
     }
 
-    #[Route('/new', name: 'app_gallery_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    
+    #[Route('/new/{member_id}', name: 'app_gallery_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, #[MapEntity(id: 'member_id')] Member $member): Response
     {
         $gallery = new Gallery();
+        $gallery->setMember($member); // Associe la galerie au membre
+        
         $form = $this->createForm(GalleryType::class, $gallery);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($gallery);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_gallery_index', [], Response::HTTP_SEE_OTHER);
+            
+            // Redirection vers la page de consultation du membre après la création de la galerie
+            return $this->redirectToRoute('app_member_show', [
+                'id' => $member->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
-
+        
         return $this->render('gallery/new.html.twig', [
             'gallery' => $gallery,
             'form' => $form,
         ]);
     }
-
+    
     #[Route('/{id}', name: 'app_gallery_show', methods: ['GET'])]
     public function show(Gallery $gallery): Response
     {
@@ -49,33 +63,61 @@ final class GalleryController extends AbstractController
             'gallery' => $gallery,
         ]);
     }
-
+    
     #[Route('/{id}/edit', name: 'app_gallery_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Gallery $gallery, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(GalleryType::class, $gallery);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_gallery_index', [], Response::HTTP_SEE_OTHER);
+            
+            // Redirection vers la page de consultation du membre propriétaire de la galerie
+            return $this->redirectToRoute('app_member_show', [
+                'id' => $gallery->getMember()->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
-
+        
         return $this->render('gallery/edit.html.twig', [
             'gallery' => $gallery,
             'form' => $form,
         ]);
     }
-
+    
     #[Route('/{id}', name: 'app_gallery_delete', methods: ['POST'])]
     public function delete(Request $request, Gallery $gallery, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$gallery->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $gallery->getId(), $request->request->get('_token'))) {
             $entityManager->remove($gallery);
             $entityManager->flush();
         }
-
-        return $this->redirectToRoute('app_gallery_index', [], Response::HTTP_SEE_OTHER);
+        
+        // Redirection vers la page de consultation du membre propriétaire de la galerie
+        return $this->redirectToRoute('app_member_show', [
+            'id' => $gallery->getMember()->getId(),
+        ], Response::HTTP_SEE_OTHER);
+    }
+    
+    #[Route('/{gallery_id}/painting/{painting_id}', name: 'app_gallery_painting_show', methods: ['GET'])]
+    public function paintingShow(
+        #[MapEntity(id: 'gallery_id')] Gallery $gallery,
+        #[MapEntity(id: 'painting_id')] Painting $painting
+        ): Response
+        {
+            // Vérification de la cohérence entre la `Gallery` et le `Painting`
+            if (!$gallery->getPaintings()->contains($painting)) {
+                throw $this->createNotFoundException("Ce tableau n'appartient pas à cette galerie !");
+            }
+            
+            // Vérification que la galerie est publique
+            if (!$gallery->isPublished()) {
+                throw $this->createAccessDeniedException("Vous ne pouvez pas accéder à cette ressource !");
+            }
+            
+            return $this->render('gallery/painting_show.html.twig', [
+                'painting' => $painting,
+                'gallery' => $gallery
+            ]);
     }
 }

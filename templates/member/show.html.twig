@@ -1,0 +1,66 @@
+{# templates/member/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Member: {{ member.email }}{% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="h3">Member Details</h1>
+            </div>
+            <div class="card-body">
+                <p><strong>Email:</strong> {{ member.email }}</p>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h2 class="h4">My Painting Collection</h2>
+            <a href="{{ path('painting_collection_show', {'id': myPaintingCollection.id}) }}" class="btn btn-secondary">
+                View My Painting Collection
+            </a>
+        </div>
+
+        <div class="mt-4">
+            <h2 class="h4">My Galleries</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Description</th>
+                        <th>Published</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for gallery in galleries %}
+                    <tr>
+                        <td>{{ gallery.id }}</td>
+                        <td>{{ gallery.description }}</td>
+                        <td>{{ gallery.published ? 'Yes' : 'No' }}</td>
+                        <td>
+                            <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}" class="btn btn-info btn-sm">Show</a>
+                            <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">No galleries found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {# Bouton pour créer une nouvelle galerie pour ce membre #}
+            <a href="{{ path('app_gallery_new', {'member_id': member.id}) }}" class="btn btn-success mt-2">
+                Create New Gallery
+            </a>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_member') }}" class="btn btn-primary">Back to Members List</a>
+        </div>
+    </div>
+{% endblock %}
+

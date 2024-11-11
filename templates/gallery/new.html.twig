@@ -1,11 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Gallery{% endblock %}
+{% block title %}Create New Gallery{% endblock %}
 
 {% block main %}
-    <h1>Create New Gallery</h1>
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h4 mb-0">Create New Gallery</h2>
+            </div>
+            <div class="card-body">
+                {{ include('gallery/_form.html.twig') }}
+            </div>
+        </div>
 
-    {{ include('gallery/_form.html.twig') }}
-
-    <a href="{{ path('app_gallery_index') }}" class="btn btn-secondary mt-2">Back to list</a>
+        <div class="mt-3">
+            <a href="{{ path('app_gallery_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Back to List
+            </a>
+        </div>
+    </div>
 {% endblock %}

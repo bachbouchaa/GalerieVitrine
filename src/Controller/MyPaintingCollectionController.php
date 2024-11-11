@@ -40,21 +40,20 @@ class MyPaintingCollectionController extends AbstractController
     /**
      * Shows the details of a single MyPaintingCollection entity.
      */
-    #[Route('/painting/collection/{id}', name: 'painting_collection_show', methods: ['GET'],requirements: ['id' => '\d+'])]
+    #[Route('/painting/collection/{id}', name: 'painting_collection_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(ManagerRegistry $doctrine, int $id): Response
     {
         $entityManager = $doctrine->getManager();
         $collection = $entityManager->getRepository(MyPaintingCollection::class)->find($id);
         
-        // Si la collection n'existe pas, nous levons une exception qui renverra une réponse HTTP 404 (Not Found).
         if (!$collection) {
             throw $this->createNotFoundException('The collection does not exist');
         }
         
-        // Lorsque tout se passe bien, nous rendons la vue Twig.
         return $this->render('my_painting_collection/show.html.twig', [
             'collection' => $collection,
         ]);
     }
+    
 }
 
