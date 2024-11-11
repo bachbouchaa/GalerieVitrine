@@ -1,7 +1,5 @@
 <?php
 
-// src/Controller/GalleryController.php
-
 namespace App\Controller;
 
 use App\Entity\Gallery;
@@ -21,7 +19,7 @@ final class GalleryController extends AbstractController
 {
     #[Route(name: 'app_gallery_index', methods: ['GET'])]
     public function index(GalleryRepository $galleryRepository): Response
-    {   
+    {
         // Retrieve only published galleries
         $galleries = $galleryRepository->findBy(['published' => true]);
         
@@ -29,13 +27,12 @@ final class GalleryController extends AbstractController
             'galleries' => $galleries,
         ]);
     }
-
     
     #[Route('/new/{member_id}', name: 'app_gallery_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, #[MapEntity(id: 'member_id')] Member $member): Response
     {
         $gallery = new Gallery();
-        $gallery->setMember($member); // Associe la galerie au membre
+        $gallery->setMember($member); // Associate gallery with the member
         
         $form = $this->createForm(GalleryType::class, $gallery);
         $form->handleRequest($request);
@@ -44,7 +41,7 @@ final class GalleryController extends AbstractController
             $entityManager->persist($gallery);
             $entityManager->flush();
             
-            // Redirection vers la page de consultation du membre après la création de la galerie
+            // Redirect to the member’s show page after creating the gallery
             return $this->redirectToRoute('app_member_show', [
                 'id' => $member->getId(),
             ], Response::HTTP_SEE_OTHER);
@@ -73,7 +70,7 @@ final class GalleryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             
-            // Redirection vers la page de consultation du membre propriétaire de la galerie
+            // Redirect to the member’s show page after editing the gallery
             return $this->redirectToRoute('app_member_show', [
                 'id' => $gallery->getMember()->getId(),
             ], Response::HTTP_SEE_OTHER);
@@ -93,7 +90,7 @@ final class GalleryController extends AbstractController
             $entityManager->flush();
         }
         
-        // Redirection vers la page de consultation du membre propriétaire de la galerie
+        // Redirect to the member’s show page after deleting the gallery
         return $this->redirectToRoute('app_member_show', [
             'id' => $gallery->getMember()->getId(),
         ], Response::HTTP_SEE_OTHER);
@@ -105,12 +102,12 @@ final class GalleryController extends AbstractController
         #[MapEntity(id: 'painting_id')] Painting $painting
         ): Response
         {
-            // Vérification de la cohérence entre la `Gallery` et le `Painting`
+            // Check if the painting belongs to this gallery
             if (!$gallery->getPaintings()->contains($painting)) {
                 throw $this->createNotFoundException("Ce tableau n'appartient pas à cette galerie !");
             }
             
-            // Vérification que la galerie est publique
+            // Ensure the gallery is public
             if (!$gallery->isPublished()) {
                 throw $this->createAccessDeniedException("Vous ne pouvez pas accéder à cette ressource !");
             }
