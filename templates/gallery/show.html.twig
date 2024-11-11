@@ -22,15 +22,22 @@
             <tr>
                 <th>Paintings</th>
                 <td>
-                    <ul>
+                    <ul class="list-group">
                         {% for painting in gallery.paintings %}
-                            <li>
-                                <a href="{{ path('app_gallery_painting_show', { 'gallery_id': gallery.id, 'painting_id': painting.id }) }}">
+                            <li class="list-group-item d-flex align-items-center">
+                                {% if painting.imageName %}
+                                    <img src="{{ vich_uploader_asset(painting, 'imageFile') }}" alt="{{ painting.title }}" class="img-thumbnail me-3" style="width: 100px; height: auto;">
+                                {% else %}
+                                    <div class="text-muted me-3" style="width: 100px; height: auto; text-align: center; line-height: 100px; border: 1px dashed #ccc;">
+                                        No Image
+                                    </div>
+                                {% endif %}
+                                <a href="{{ path('app_gallery_painting_show', { 'gallery_id': gallery.id, 'painting_id': painting.id }) }}" class="text-decoration-none">
                                     {{ painting.title }}
                                 </a>
                             </li>
                         {% else %}
-                            <li>No paintings available in this gallery.</li>
+                            <li class="list-group-item text-muted">No paintings available in this gallery.</li>
                         {% endfor %}
                     </ul>
                 </td>
@@ -43,4 +50,3 @@
 
     {{ include('gallery/_delete_form.html.twig') }}
 {% endblock %}
-

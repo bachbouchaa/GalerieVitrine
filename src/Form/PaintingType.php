@@ -9,6 +9,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+
 
 class PaintingType extends AbstractType
 {
@@ -31,6 +33,12 @@ class PaintingType extends AbstractType
                 'choice_label' => 'id',
                 'multiple' => true,
                 'expanded' => true, // Optional: to display as checkboxes
+            ])
+            ->add('imageFile', VichImageType::class, [
+                'required' => false,
+                'label' => 'Painting Image (JPEG or PNG file)',
+                'allow_delete' => true, // Permet de supprimer l'image
+                'download_uri' => false, // Permet de ne pas afficher le lien de téléchargement
             ]);
     }
 

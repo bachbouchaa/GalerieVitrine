@@ -31,6 +31,16 @@
                 <th scope="row">Style</th>
                 <td>{{ painting.style }}</td>
             </tr>
+            <tr>
+                <th scope="row">Image</th>
+                <td>
+                    {% if painting.imageName %}
+                        <img src="{{ vich_uploader_asset(painting, 'imageFile') }}" alt="{{ painting.title }}" class="img-fluid" style="max-width: 300px;">
+                    {% else %}
+                        <span class="text-muted">Pas d'image disponible</span>
+                    {% endif %}
+                </td>
+            </tr>
         </tbody>
     </table>
 

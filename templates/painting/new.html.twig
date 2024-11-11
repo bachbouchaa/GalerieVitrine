@@ -14,7 +14,11 @@
                 {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
                 {{ form_row(form.style, {'attr': {'class': 'form-control'}}) }}
                 
-                <button type="submit" class="btn btn-success mt-3">Create</button>
+                {{ form_row(form.myPaintingCollection, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.galleries, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_row(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+                
+                <button type="submit" class="btn btn-success mt-4">Create</button>
             {{ form_end(form) }}
         </div>
 
