@@ -2,22 +2,38 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Painting Collections List{% endblock %}
+{% block title %}Liste de collections de tableaux{% endblock %}
 
-{% block body %}
-    <h1>Liste de collections de tableaux </h1>
-    <p>Collections disponibles </p>
+{% block main %}
+    <h1>Liste de collections de tableaux</h1>
+    <p>Collections disponibles</p>
 
-    <ul>
-        {% for collection in collections %}
-            <li>
-                <a href="{{ path('painting_collection_show', {'id': collection.id}) }}">
-                    {{ collection.name }}
-                </a>
-            </li>
-        {% else %}
-            <li>No collections available at the moment.</li>
-        {% endfor %}
-    </ul>
-
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for collection in collections %}
+                <tr>
+                    <td>{{ collection.id }}</td>
+                    <td>{{ collection.name }}</td>
+                    <td>{{ collection.description }}</td>
+                    <td>
+                        <a href="{{ path('painting_collection_show', {'id': collection.id}) }}" class="btn btn-primary btn-sm">
+                            Voir
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">Aucune collection disponible pour le moment.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -44,7 +44,7 @@ Suivez ces étapes pour cloner et exécuter le projet sur votre machine :
 4. **Créer la Base de Données et le Schéma** :
    ```bash
    symfony console doctrine:database:create
-   symfony console doctrine:schema:update --force
+   symfony console doctrine:schema:create
    ```
 
 5. **Charger les Fixtures** :

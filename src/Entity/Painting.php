@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PaintingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PaintingRepository::class)]
@@ -34,6 +36,17 @@ class Painting
     #[ORM\ManyToOne(inversedBy: 'paintings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?MyPaintingCollection $myPaintingCollection = null;
+
+    /**
+     * @var Collection<int, Gallery>
+     */
+    #[ORM\ManyToMany(targetEntity: Gallery::class, mappedBy: 'paintings')]
+    private Collection $galleries;
+
+    public function __construct()
+    {
+        $this->galleries = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,6 +136,33 @@ class Painting
             $this->style ?? 'Unknown Style',
             $this->myPaintingCollection ? $this->myPaintingCollection->getName() : 'No Collection'
             );
+    }
+
+    /**
+     * @return Collection<int, Gallery>
+     */
+    public function getGalleries(): Collection
+    {
+        return $this->galleries;
+    }
+
+    public function addGallery(Gallery $gallery): static
+    {
+        if (!$this->galleries->contains($gallery)) {
+            $this->galleries->add($gallery);
+            $gallery->addPainting($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGallery(Gallery $gallery): static
+    {
+        if ($this->galleries->removeElement($gallery)) {
+            $gallery->removePainting($this);
+        }
+
+        return $this;
     }
     
 }

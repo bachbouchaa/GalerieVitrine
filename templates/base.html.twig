@@ -29,6 +29,23 @@
         {% endblock %}{# menu #}
 
         {% block body %}
+        <div class="container body-container mt-4">
+            <main>
+        
+              {# Ici la partie utile que les gabarits des pages vont surcharger #}
+              {% block main %}
+              <div class="row">
+                <div class="col-md-12">
+                  <p>
+                    <i>MAIN</i>
+                  </p>
+                </div>
+              </div>
+              {% endblock %} {# main #}
+        
+            </main>
+        
+          </div> <!-- /.body-container -->
         {% endblock %}
 
         {% block javascripts %}

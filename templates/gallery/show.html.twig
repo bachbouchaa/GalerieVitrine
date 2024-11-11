@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gallery{% endblock %}
+
+{% block main %}
+    <h1>Gallery Details</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ gallery.id }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ gallery.description }}</td>
+            </tr>
+            <tr>
+                <th>Published</th>
+                <td>{{ gallery.published ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Paintings</th>
+                <td>
+                    <ul>
+                        {% for painting in gallery.paintings %}
+                            <li>{{ painting.title }} by {{ painting.artist }} ({{ painting.creationYear }})</li>
+                        {% else %}
+                            <li>No paintings available in this gallery.</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gallery_index') }}" class="btn btn-primary mt-2 mb-2">Back to list</a>
+    <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-success mt-2 mb-2">Edit</a>
+
+    {{ include('gallery/_delete_form.html.twig') }}
+{% endblock %}
+

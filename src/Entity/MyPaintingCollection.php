@@ -21,11 +21,11 @@ class MyPaintingCollection
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @var Collection<int, Painting>
-     */
     #[ORM\OneToMany(targetEntity: Painting::class, mappedBy: 'myPaintingCollection', orphanRemoval: true)]
     private Collection $paintings;
+
+    #[ORM\OneToOne(inversedBy: 'collection', cascade: ['persist', 'remove'])]
+    private ?Member $member = null;
 
     public function __construct()
     {
@@ -61,9 +61,6 @@ class MyPaintingCollection
         return $this;
     }
 
-    /**
-     * @return Collection<int, Painting>
-     */
     public function getPaintings(): Collection
     {
         return $this->paintings;
@@ -82,7 +79,6 @@ class MyPaintingCollection
     public function removePainting(Painting $painting): static
     {
         if ($this->paintings->removeElement($painting)) {
-            // set the owning side to null (unless already changed)
             if ($painting->getMyPaintingCollection() === $this) {
                 $painting->setMyPaintingCollection(null);
             }
@@ -90,7 +86,7 @@ class MyPaintingCollection
 
         return $this;
     }
-    
+
     public function __toString(): string
     {
         return sprintf(
@@ -98,7 +94,18 @@ class MyPaintingCollection
             $this->name ?? 'Unnamed Collection',
             $this->description ?? 'No Description',
             $this->paintings->count()
-            );
+        );
     }
-    
+
+    public function getMember(): ?Member
+    {
+        return $this->member;
+    }
+
+    public function setMember(?Member $member): static
+    {
+        $this->member = $member;
+
+        return $this;
+    }
 }
