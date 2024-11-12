@@ -41,7 +41,7 @@
     <a href="{{ path('collection_list') }}" class="btn btn-secondary mt-4">Retour à la liste des collections</a>
     #}
     
-    <a href="{{ path('app_member', {'id': collection.member.id}) }}" class="btn btn-secondary mt-2">Back to Member</a>
+    <a href="{{ path('app_member_show', {'id': collection.member.id}) }}" class="btn btn-secondary mt-2">Back to Member</a>
     <a href="{{ path('app_painting_new', {'id': collection.id}) }}" class="btn btn-success mt-2">Add New Painting</a>
     
     

@@ -13,26 +13,45 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/gallery')]
+
 final class GalleryController extends AbstractController
 {
-    #[Route(name: 'app_gallery_index', methods: ['GET'])]
+    #[Route('/', name: 'app_gallery_index', methods: ['GET'])]
     public function index(GalleryRepository $galleryRepository): Response
     {
-        // Retrieve only published galleries
-        $galleries = $galleryRepository->findBy(['published' => true]);
+        $member = $this->getUser();
+        // Retrieve only published galleries visible to everyone
+        $publicGalleries = $galleryRepository->findBy(['published' => true]);
+
+        // If the user is logged in, retrieve their unpublished galleries as well
+        $privateGalleries = [];
+        if ($member) {
+            $privateGalleries = $galleryRepository->findBy([
+                'published' => false,
+                'member' => $member,
+            ]);
+        }
 
         return $this->render('gallery/index.html.twig', [
-            'galleries' => $galleries,
+            'public_galleries' => $publicGalleries,
+            'private_galleries' => $privateGalleries,
         ]);
     }
+
 
     #[Route('/new/{member_id}', name: 'app_gallery_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, #[MapEntity(id: 'member_id')] Member $member): Response
     {
+        // Ensure the user creating a gallery is either the member or an admin
+        if (!$this->isGranted('ROLE_ADMIN') && $this->getUser() !== $member) {
+            throw $this->createAccessDeniedException("You do not have permission to create a gallery for this member.");
+        }
+
         $gallery = new Gallery();
-        $gallery->setMember($member); // Associate gallery with the member
+        $gallery->setMember($member);
 
         $form = $this->createForm(GalleryType::class, $gallery);
         $form->handleRequest($request);
@@ -41,7 +60,6 @@ final class GalleryController extends AbstractController
             $entityManager->persist($gallery);
             $entityManager->flush();
 
-            // Redirect to the member’s show page after creating the gallery
             return $this->redirectToRoute('app_member_show', [
                 'id' => $member->getId(),
             ], Response::HTTP_SEE_OTHER);
@@ -56,6 +74,24 @@ final class GalleryController extends AbstractController
     #[Route('/{id}', name: 'app_gallery_show', methods: ['GET'])]
     public function show(Gallery $gallery): Response
     {
+        $hasAccess = false;
+
+        // Grant access if the user is an admin or the gallery is published
+        if ($this->isGranted('ROLE_ADMIN') || $gallery->isPublished()) {
+            $hasAccess = true;
+        } else {
+            // Otherwise, check if the user is the owner of the gallery
+            $member = $this->getUser();
+            if ($member && ($member === $gallery->getMember())) {
+                $hasAccess = true;
+            }
+        }
+
+        // If access is not granted, throw an access denied exception
+        if (!$hasAccess) {
+            throw $this->createAccessDeniedException("You cannot access the requested resource!");
+        }
+
         return $this->render('gallery/show.html.twig', [
             'gallery' => $gallery,
         ]);
@@ -64,13 +100,17 @@ final class GalleryController extends AbstractController
     #[Route('/{id}/edit', name: 'app_gallery_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Gallery $gallery, EntityManagerInterface $entityManager): Response
     {
+        // Allow only admins or the gallery owner to edit the gallery
+        if (!$this->isGranted('ROLE_ADMIN') && $this->getUser() !== $gallery->getMember()) {
+            throw $this->createAccessDeniedException("You do not have permission to edit this gallery.");
+        }
+
         $form = $this->createForm(GalleryType::class, $gallery);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            // Redirect to the member’s show page after editing the gallery
             return $this->redirectToRoute('app_member_show', [
                 'id' => $gallery->getMember()->getId(),
             ], Response::HTTP_SEE_OTHER);
@@ -85,12 +125,16 @@ final class GalleryController extends AbstractController
     #[Route('/{id}', name: 'app_gallery_delete', methods: ['POST'])]
     public function delete(Request $request, Gallery $gallery, EntityManagerInterface $entityManager): Response
     {
+        // Allow only admins or the gallery owner to delete the gallery
+        if (!$this->isGranted('ROLE_ADMIN') && $this->getUser() !== $gallery->getMember()) {
+            throw $this->createAccessDeniedException("You do not have permission to delete this gallery.");
+        }
+
         if ($this->isCsrfTokenValid('delete' . $gallery->getId(), $request->request->get('_token'))) {
             $entityManager->remove($gallery);
             $entityManager->flush();
         }
 
-        // Redirect to the member’s show page after deleting the gallery
         return $this->redirectToRoute('app_member_show', [
             'id' => $gallery->getMember()->getId(),
         ], Response::HTTP_SEE_OTHER);
@@ -103,17 +147,30 @@ final class GalleryController extends AbstractController
     ): Response {
         // Check if the painting belongs to this gallery
         if (!$gallery->getPaintings()->contains($painting)) {
-            throw $this->createNotFoundException("Ce tableau n'appartient pas à cette galerie !");
+            throw $this->createNotFoundException("This painting is not part of this gallery!");
         }
 
-        // Ensure the gallery is public
-        if (!$gallery->isPublished()) {
-            throw $this->createAccessDeniedException("Vous ne pouvez pas accéder à cette ressource !");
+        $hasAccess = false;
+
+        // Allow access if the user is an admin or if the gallery is published
+        if ($this->isGranted('ROLE_ADMIN') || $gallery->isPublished()) {
+            $hasAccess = true;
+        } else {
+            // Otherwise, check if the current user is the owner of the gallery
+            $member = $this->getUser();
+            if ($member && ($member === $gallery->getMember())) {
+                $hasAccess = true;
+            }
+        }
+
+        // If access is not granted, throw an access denied exception
+        if (!$hasAccess) {
+            throw $this->createAccessDeniedException("You cannot access the requested resource!");
         }
 
         return $this->render('gallery/painting_show.html.twig', [
             'painting' => $painting,
-            'gallery' => $gallery
+            'gallery' => $gallery,
         ]);
     }
 }

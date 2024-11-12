@@ -1,36 +1,82 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gallery Index{% endblock %}
+{% block title %}Galleries{% endblock %}
 
 {% block main %}
-    <h1>Gallery Index</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Galleries</h1>
 
-    <table class="table">
-        <thead>
+    <h2 class="text-primary">Public Galleries</h2>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
             <tr>
-                <th>Id</th>
-                <th>Description</th>
-                <th>Published</th>
-                <th>Actions</th>
+                <th scope="col">ID</th>
+                <th scope="col">Description</th>
+                <th scope="col">Published</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
-        
-        {% for gallery in galleries %}
+        {% for gallery in public_galleries %}
             <tr>
                 <td>{{ gallery.id }}</td>
                 <td>{{ gallery.description }}</td>
                 <td>{{ gallery.published ? 'Yes' : 'No' }}</td>
                 <td>
-                    <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}" class="btn btn-info btn-sm">Show</a>
-                    <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}" class="btn btn-outline-primary btn-sm">
+                        Show
+                    </a>
+                    {% if is_granted('ROLE_ADMIN') or (app.user is not null and gallery.member is not null and gallery.member.id == app.user.id) %}
+                        <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-outline-secondary btn-sm">
+                            Edit
+                        </a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">No records found</td>
+                <td colspan="4" class="text-center">No public galleries found.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    {% if private_galleries is not empty %}
+        <h2 class="text-success">Your Private Galleries</h2>
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Published</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for gallery in private_galleries %}
+                <tr>
+                    <td>{{ gallery.id }}</td>
+                    <td>{{ gallery.description }}</td>
+                    <td>{{ gallery.published ? 'Yes' : 'No' }}</td>
+                    <td>
+                        <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}" class="btn btn-outline-primary btn-sm">
+                            Show
+                        </a>
+                        {% if app.user is not null and gallery.member is not null and gallery.member.id == app.user.id %}
+                            <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-outline-secondary btn-sm">
+                                Edit
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">No private galleries found.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
 {% endblock %}
+
