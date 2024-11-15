@@ -1,48 +1,53 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Painting: {{ painting.title }}{% endblock %}
 
 {% block main %}
-    <h1>Fiche du tableau: {{ painting.title }}</h1>
+<div class="container mt-5">
+    <!-- Page Title -->
+    <h1 class="mb-4 text-center fw-bold" style="color: #4a148c;"><i class="bi bi-palette me-2"></i>  {{ painting.title }}</h1>
 
-    {# Affichage des informations détaillées du tableau de peinture #}
-    <table class="table table-bordered table-hover">
-        <tbody>
-            <tr>
-                <th scope="row">Id</th>
-                <td>{{ painting.id }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Titre</th>
-                <td>{{ painting.title }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Artiste</th>
-                <td>{{ painting.artist }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Année de Création</th>
-                <td>{{ painting.creationYear }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Description</th>
-                <td>{{ painting.description }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Style</th>
-                <td>{{ painting.style }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Collection</th>
-                <td>
-                    <a href="{{ path('app_gallery_show', { 'id': gallery.id }) }}" class="text-decoration-none">Retour à la galerie</a>
-                    
-                </td>
-            </tr>
-        </tbody>
-    </table>
-{#
-<a href="{{ path('collection_list') }}" class="btn btn-secondary mt-4">Retour à la liste des collections</a>
-#}
+    <!-- Painting Details Card -->
+    <div class="card shadow-lg border-0 rounded-4 mb-4" style="background: linear-gradient(135deg, #f3e5f5, #e1bee7);">
+        <div class="card-body">
+            <h2 class="h5 mb-4 text-center" style="color: #5a189a;">Details</h2>
+            <table class="table table-striped table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th scope="row" class="text-secondary">ID</th>
+                        <td>{{ painting.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-secondary">Titre</th>
+                        <td>{{ painting.title }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-secondary">Artiste</th>
+                        <td>{{ painting.artist }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-secondary">Année de Création</th>
+                        <td>{{ painting.creationYear }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-secondary">Description</th>
+                        <td>{{ painting.description }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-secondary">Style</th>
+                        <td>{{ painting.style }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-secondary">Gallery</th>
+                        <td>
+                            <a href="{{ path('app_gallery_show', { 'id': gallery.id }) }}" class="btn btn-outline-primary btn-sm shadow-sm">
+                                <i class="bi bi-arrow-left-circle"></i> Back to Gallery
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

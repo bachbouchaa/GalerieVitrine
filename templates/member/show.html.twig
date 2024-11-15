@@ -1,62 +1,84 @@
-{# templates/member/show.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Member: {{ member.email }}{% endblock %}
 
 {% block main %}
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h1 class="h3">Member Details</h1>
+<div class="container mt-5">
+    <!-- Member Details Section -->
+    <section class="mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-lg rounded-4" style="background: #faf3e0;">
+                    <div class="card-body text-center">
+                        <h2 class="h4 mb-3" style="color: #5a189a;">🎨 Member Information</h2>
+                        <p class="mb-2 fs-5"><strong>ID:</strong> {{ member.id }}</p>
+                        <p class="fs-5"><strong>Email:</strong> {{ member.email }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <p><strong>Email:</strong> {{ member.email }}</p>
+        </div>
+    </section>
+
+    <!-- Painting Collection Section -->
+    <section class="mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-lg rounded-4" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc);">
+                    <div class="card-body text-center">
+                        <h2 class="h4 mb-3" style="color: #1e3a8a;">My Painting Collection</h2>
+                        <a href="{{ path('painting_collection_show', {'id': myPaintingCollection.id}) }}" class="btn btn-lg btn-dark">
+                            <i class="bi bi-brush me-2"></i> Explore Collection
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="mt-4">
-            <h2 class="h4">My Painting Collection</h2>
-            <a href="{{ path('painting_collection_show', {'id': myPaintingCollection.id}) }}" class="btn btn-secondary">
-                View My Painting Collection
-            </a>
+    <!-- My Galleries Section -->
+    <section class="mb-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-4">
+                    <h2 class="h4" style="color: #0077b6;">My Galleries</h2>
+                </div>
+                <div class="row g-4">
+                    {% for gallery in galleries %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card border-0 shadow-sm rounded-4" style="background: #f0f0f0;">
+                                <div class="card-body">
+                                    <h5 class="card-title text-dark">{{ gallery.description }}</h5>
+                                    <p class="mb-2">
+                                        <span class="badge {{ gallery.published ? 'bg-success' : 'bg-danger' }}">
+                                            {{ gallery.published ? 'Published' : 'Unpublished' }}
+                                        </span>
+                                    </p>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                        <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            <p class="text-center text-muted">No galleries found.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="mt-4">
-            <h2 class="h4">My Galleries</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Description</th>
-                        <th>Published</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for gallery in galleries %}
-                    <tr>
-                        <td>{{ gallery.id }}</td>
-                        <td>{{ gallery.description }}</td>
-                        <td>{{ gallery.published ? 'Yes' : 'No' }}</td>
-                        <td>
-                            <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}" class="btn btn-info btn-sm">Show</a>
-                            <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-warning btn-sm">Edit</a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4">No galleries found</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-            {# Bouton pour créer une nouvelle galerie pour ce membre #}
-            <a href="{{ path('app_gallery_new', {'member_id': member.id}) }}" class="btn btn-success mt-2">
-                Create New Gallery
-            </a>
-        </div>
-    </div>
+    <!-- Create New Gallery Button -->
+    <section class="text-center">
+        <a href="{{ path('app_gallery_new', {'member_id': member.id}) }}" class="btn btn-lg btn-success shadow-sm" style="background: #a8df65; color: #1b4332;">
+            <i class="bi bi-plus-circle me-2"></i> Create New Gallery
+        </a>
+    </section>
+</div>
 {% endblock %}
-

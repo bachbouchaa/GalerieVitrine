@@ -1,52 +1,65 @@
-{# templates/my_painting_collection/list.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Liste de collections de tableaux{% endblock %}
 
 {% block main %}
 <div class="container mt-5">
-    <h1 class="mb-4">Liste de collections de tableaux</h1>
+    <!-- Page Title -->
+<h1 class="mb-4 text-center fw-bold" style="color: #6610f2; font-size: 2.5rem; text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);">
+    <i class="bi bi-brush-fill"></i> Painting Collection List
+</h1>
 
+    <!-- Collection Table or Single Collection Display -->
     {% if collections is iterable %}
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for collection in collections %}
+        <!-- Collections Table -->
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
                     <tr>
-                        <td>{{ collection.id }}</td>
-                        <td>{{ collection.name }}</td>
-                        <td>{{ collection.description }}</td>
-                        <td>
-                            <a href="{{ path('painting_collection_show', { 'id': collection.id }) }}" class="btn btn-primary btn-sm">
-                                Voir la collection
-                            </a>
-                        </td>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for collection in collections %}
+                        <tr>
+                            <td>{{ collection.id }}</td>
+                            <td>{{ collection.name }}</td>
+                            <td>{{ collection.description }}</td>
+                            <td>
+                                <a href="{{ path('painting_collection_show', { 'id': collection.id }) }}" class="btn btn-sm btn-outline-primary">
+                                    Voir la collection
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% elseif collections is defined %}
-        {# Display a single collection if it's not iterable (a single object) #}
-        <div class="card mb-3">
+        <!-- Single Collection Card -->
+        <div class="card shadow-sm border-0 rounded-4 mb-3">
             <div class="card-body">
-                <h2 class="card-title">{{ collections.name }}</h2>
+                <h2 class="card-title text-primary">{{ collections.name }}</h2>
                 <p class="card-text"><strong>ID:</strong> {{ collections.id }}</p>
                 <p class="card-text"><strong>Description:</strong> {{ collections.description }}</p>
-                <a href="{{ path('painting_collection_show', { 'id': collections.id }) }}" class="btn btn-primary">Afficher la collection</a>
+                <a href="{{ path('painting_collection_show', { 'id': collections.id }) }}" class="btn btn-primary">
+                    Afficher la collection
+                </a>
             </div>
         </div>
     {% else %}
-        <p class="text-center">Aucune collection disponible pour le moment.</p>
+        <!-- No Collections Message -->
+        <p class="text-center text-muted">Aucune collection disponible pour le moment.</p>
     {% endif %}
 
-    <a href="{{ path('app_my_painting_collection') }}" class="btn btn-secondary mt-3">Retour à la liste des collections</a>
+    <!-- Back to Collections List Button -->
+    <div class="text-center mt-4">
+        <a href="{{ path('app_my_painting_collection') }}" class="btn btn-secondary">
+            Retour à la liste des collections
+        </a>
+    </div>
 </div>
 {% endblock %}

@@ -1,52 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gallery{% endblock %}
+{% block title %}Gallery Details{% endblock %}
 
 {% block main %}
-    <h1>Gallery Details</h1>
+<div class="container mt-5">
+    <!-- Gallery Details Card -->
+    <div class="card shadow-lg border-0 rounded-4 mb-4" style="background: #f0f0f5;">
+        <div class="card-header text-white rounded-top" style="background-color: #2c3e50;">
+            <h1 class="h4 mb-0 text-center"><i class="bi bi-image-fill me-2"></i> Gallery Details</h1>
+        </div>
+        <div class="card-body">
+            <ul class="list-unstyled mb-0">
+                <li class="mb-3">
+                    <strong>ID:</strong> <span class="text-dark">{{ gallery.id }}</span>
+                </li>
+                <li class="mb-3">
+                    <strong>Description:</strong> <span class="text-dark">{{ gallery.description }}</span>
+                </li>
+                <li class="mb-3">
+                    <strong>Published:</strong> 
+                    <span class="badge {{ gallery.published ? 'bg-success' : 'bg-danger' }}">
+                        {{ gallery.published ? 'Yes' : 'No' }}
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ gallery.id }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ gallery.description }}</td>
-            </tr>
-            <tr>
-                <th>Published</th>
-                <td>{{ gallery.published ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Paintings</th>
-                <td>
-                    <ul class="list-group">
-                        {% for painting in gallery.paintings %}
-                            <li class="list-group-item d-flex align-items-center">
-                                {% if painting.imageName %}
-                                    <img src="{{ vich_uploader_asset(painting, 'imageFile') }}" alt="{{ painting.title }}" class="img-thumbnail me-3" style="width: 100px; height: auto;">
-                                {% else %}
-                                    <div class="text-muted me-3" style="width: 100px; height: auto; text-align: center; line-height: 100px; border: 1px dashed #ccc;">
-                                        No Image
-                                    </div>
-                                {% endif %}
-                                <a href="{{ path('app_gallery_painting_show', { 'gallery_id': gallery.id, 'painting_id': painting.id }) }}" class="text-decoration-none">
-                                    {{ painting.title }}
-                                </a>
-                            </li>
+    <!-- Paintings List Section -->
+    <div class="card shadow-lg border-0 rounded-4 mb-4" style="background: #e8f5e9;">
+        <div class="card-body">
+            <h2 class="h5 mb-3" style="color: #388e3c;">Paintings in This Gallery</h2>
+            <ul class="list-group list-group-flush">
+                {% for painting in gallery.paintings %}
+                    <li class="list-group-item d-flex align-items-center">
+                        {% if painting.imageName %}
+                            <img src="{{ vich_uploader_asset(painting, 'imageFile') }}" alt="{{ painting.title }}" class="img-thumbnail me-3 shadow-sm" style="width: 100px; height: auto; border-radius: 8px;">
                         {% else %}
-                            <li class="list-group-item text-muted">No paintings available in this gallery.</li>
-                        {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                            <div class="text-muted me-3 d-flex justify-content-center align-items-center" style="width: 100px; height: 100px; border: 1px dashed #ccc; border-radius: 8px;">
+                                No Image
+                            </div>
+                        {% endif %}
+                        <a href="{{ path('app_gallery_painting_show', { 'gallery_id': gallery.id, 'painting_id': painting.id }) }}" class="text-decoration-none text-dark fs-6 fw-bold">
+                            {{ painting.title }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="list-group-item text-muted text-center">No paintings available in this gallery.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 
-    <a href="{{ path('app_gallery_index') }}" class="btn btn-primary mt-2 mb-2">Back to list</a>
-    <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-success mt-2 mb-2">Edit</a>
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ path('app_gallery_index') }}" class="btn btn-outline-secondary shadow-sm">
+            <i class="bi bi-arrow-left me-2"></i> Back to List
+        </a>
+        <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-outline-primary shadow-sm">
+            <i class="bi bi-pencil-square me-2"></i> Edit Gallery
+        </a>
+    </div>
 
-    {{ include('gallery/_delete_form.html.twig') }}
+    <!-- Delete Form -->
+    <div class="mt-3">
+        {{ include('gallery/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}
