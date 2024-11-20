@@ -13,33 +13,37 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 
 #[Route('/gallery')]
 
 final class GalleryController extends AbstractController
 {
     #[Route('/', name: 'app_gallery_index', methods: ['GET'])]
-    public function index(GalleryRepository $galleryRepository): Response
-    {
-        $member = $this->getUser();
-        // Retrieve only published galleries visible to everyone
-        $publicGalleries = $galleryRepository->findBy(['published' => true]);
+public function index(GalleryRepository $galleryRepository): Response
+{
+    $member = $this->getUser();
 
-        // If the user is logged in, retrieve their unpublished galleries as well
-        $privateGalleries = [];
-        if ($member) {
-            $privateGalleries = $galleryRepository->findBy([
-                'published' => false,
-                'member' => $member,
-            ]);
-        }
-
-        return $this->render('gallery/index.html.twig', [
-            'public_galleries' => $publicGalleries,
-            'private_galleries' => $privateGalleries,
-        ]);
+    if (!$member) {
+        // Redirect unauthenticated users to the login page
+        return new RedirectResponse($this->generateUrl('app_login'));
     }
+
+    // Retrieve all published galleries
+    $publicGalleries = $galleryRepository->findBy(['published' => true]);
+
+    // Retrieve the authenticated user's unpublished galleries
+    $privateGalleries = $galleryRepository->findBy([
+        'published' => false,
+        'member' => $member,
+    ]);
+
+    return $this->render('gallery/index.html.twig', [
+        'public_galleries' => $publicGalleries,
+        'private_galleries' => $privateGalleries,
+    ]);
+}
 
 
     #[Route('/new/{member_id}', name: 'app_gallery_new', methods: ['GET', 'POST'])]

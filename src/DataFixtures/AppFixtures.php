@@ -13,38 +13,78 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        // Data pour les collections de peintures
+        // Data for painting collections
         $membersData = [
             'nermine@example.com' => [
                 'paintings' => [
-                    ['title' => 'Mona Lisa', 'artist' => 'Leonardo da Vinci', 'year' => 1503],
-                    ['title' => 'Madonna of the Rocks', 'artist' => 'Leonardo da Vinci', 'year' => 1483],
-                    ['title' => 'Lady with an Ermine', 'artist' => 'Leonardo da Vinci', 'year' => 1489],
-                    ['title' => 'Vitruvian Man', 'artist' => 'Leonardo da Vinci', 'year' => 1490],
+                    [
+                        'title' => 'Mona Lisa',
+                        'artist' => 'Leonardo da Vinci',
+                        'year' => 1503,
+                        'image' => 'mona_lisa.webp'
+                    ],
+                    [
+                        'title' => 'Madonna of the Rocks',
+                        'artist' => 'Leonardo da Vinci',
+                        'year' => 1483,
+                        'image' => 'madonna.jpg'
+                    ],
+                    [
+                        'title' => 'Lady with an Ermine',
+                        'artist' => 'Leonardo da Vinci',
+                        'year' => 1489,
+                        'image' => 'lady.jpg'
+                    ],
+                    [
+                        'title' => 'Vitruvian Man',
+                        'artist' => 'Leonardo da Vinci',
+                        'year' => 1490,
+                        'image' => 'Vitruvian.jpg'
+                    ],
                 ]
             ],
             'khalil@example.com' => [
                 'paintings' => [
-                    ['title' => 'The Starry Night', 'artist' => 'Vincent van Gogh', 'year' => 1889],
-                    ['title' => 'Sunflowers', 'artist' => 'Vincent van Gogh', 'year' => 1888],
-                    ['title' => 'Wheatfield with Crows', 'artist' => 'Vincent van Gogh', 'year' => 1890],
-                    ['title' => 'Almond Blossoms', 'artist' => 'Vincent van Gogh', 'year' => 1890],
+                    [
+                        'title' => 'The Starry Night',
+                        'artist' => 'Vincent van Gogh',
+                        'year' => 1889,
+                        'image' => 'starry_night.jpg'
+                    ],
+                    [
+                        'title' => 'Sunflowers',
+                        'artist' => 'Vincent van Gogh',
+                        'year' => 1888,
+                        'image' => 'sunflowers.jpg'
+                    ],
+                    [
+                        'title' => 'Wheatfield with Crows',
+                        'artist' => 'Vincent van Gogh',
+                        'year' => 1890,
+                        'image' => 'Wheatfield.jpg'
+                    ],
+                    [
+                        'title' => 'Almond Blossoms',
+                        'artist' => 'Vincent van Gogh',
+                        'year' => 1890,
+                        'image' => 'almond.jpg'
+                    ],
                 ]
             ]
         ];
 
         foreach ($membersData as $email => $data) {
-            // Récupérer le Member à partir de la référence
+            // Retrieve the Member reference
             $member = $this->getReference('member_' . $email);
 
-            // Créer une collection de peintures pour chaque membre
+            // Create a painting collection for each member
             $collection = new MyPaintingCollection();
             $collection->setName("Collection of {$email}")
                 ->setDescription("A private collection for {$email}")
                 ->setMember($member);
             $manager->persist($collection);
 
-            // Créer des peintures pour la collection du membre
+            // Create paintings for the member's collection
             $paintings = [];
             foreach ($data['paintings'] as $paintingInfo) {
                 $painting = new Painting();
@@ -52,18 +92,19 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
                     ->setArtist($paintingInfo['artist'])
                     ->setCreationYear($paintingInfo['year'])
                     ->setDescription("A masterpiece by {$paintingInfo['artist']}")
-                    ->setMyPaintingCollection($collection);
+                    ->setMyPaintingCollection($collection)
+                    ->setImageName($paintingInfo['image']); // Set the image filename
                 $manager->persist($painting);
-                $paintings[] = $painting; // Collecter les peintures pour les associer aux galeries
+                $paintings[] = $painting; // Collect paintings to associate with galleries
             }
 
-            // Créer des galeries et y associer les peintures
+            // Create galleries and associate paintings
             $gallery1 = new Gallery();
             $gallery1->setDescription("Renaissance Highlights of {$email}")
                 ->setPublished(true)
                 ->setMember($member);
 
-            // Assigner les deux premières peintures à la galerie 1
+            // Assign the first two paintings to gallery 1
             foreach (array_slice($paintings, 0, 2) as $painting) {
                 $gallery1->addPainting($painting);
             }
@@ -74,7 +115,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
                 ->setPublished(false)
                 ->setMember($member);
 
-            // Assigner les deux dernières peintures à la galerie 2
+            // Assign the last two paintings to gallery 2
             foreach (array_slice($paintings, 2, 2) as $painting) {
                 $gallery2->addPainting($painting);
             }

@@ -32,7 +32,7 @@ class MyPaintingCollectionController extends AbstractController
                 throw $this->createNotFoundException("Member not found.");
             }
 
-            $collections = $member->getCollection(); // Make sure this returns a Collection of MyPaintingCollection entities
+            $collections = $member->getCollection();
         }
 
         return $this->render('my_painting_collection/list.html.twig', [
@@ -62,7 +62,7 @@ class MyPaintingCollectionController extends AbstractController
             'collection' => $collection,
         ]);
     }
-
+    /*
     #[Route('/', name: 'collection_list', methods: ['GET'])]
     public function listAction(ManagerRegistry $doctrine): Response
     {
@@ -73,4 +73,5 @@ class MyPaintingCollectionController extends AbstractController
             'collections' => $collections
         ]);
     }
+ */
 }

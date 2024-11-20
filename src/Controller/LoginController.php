@@ -6,6 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use App\Entity\Member;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 class LoginController extends AbstractController
 {
@@ -23,6 +26,31 @@ class LoginController extends AbstractController
             'error'         => $error,
         ]);
     }
+
+    #[Route('/', name: 'home')]
+    public function redirectToLogin(EntityManagerInterface $entityManager): Response
+    {
+       // Ensure the user is logged in
+    if (!$this->getUser()) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    // Fetch the current user from the database
+    $currentUser = $entityManager->getRepository(Member::class)
+        ->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+
+    // Check if the user exists in the database
+    if (!$currentUser) {
+        throw $this->createNotFoundException('User not found.');
+    }
+
+    // Get the user's ID
+    $userId = $currentUser->getId();
+
+    // Example: Redirect to the user's profile page
+    return $this->redirectToRoute('app_member_show', ['id' => $userId]);
+    }
+
 
     #[Route('/logout', name: 'app_logout', methods: ['GET', 'POST'])]
     public function logout()

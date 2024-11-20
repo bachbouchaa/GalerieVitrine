@@ -57,8 +57,8 @@
 
     <!-- Back to Collections List Button -->
     <div class="text-center mt-4">
-        <a href="{{ path('app_my_painting_collection') }}" class="btn btn-secondary">
-            Retour à la liste des collections
+        <a href="{{ path('app_member_show', { 'id': app.user.id }) }}" class="btn btn-secondary">
+            Retour au profil
         </a>
     </div>
 </div>

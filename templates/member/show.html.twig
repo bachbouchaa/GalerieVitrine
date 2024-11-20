@@ -4,13 +4,13 @@
 
 {% block main %}
 <div class="container mt-5">
-    <!-- Member Details Section -->
+    <!-- Member Information -->
     <section class="mb-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card border-0 shadow-lg rounded-4" style="background: #faf3e0;">
+                <div class="card border-0 shadow-sm rounded-4 bg-light">
                     <div class="card-body text-center">
-                        <h2 class="h4 mb-3" style="color: #5a189a;">🎨 Member Information</h2>
+                        <h2 class="h4 mb-3 text-primary">Member Information</h2>
                         <p class="mb-2 fs-5"><strong>ID:</strong> {{ member.id }}</p>
                         <p class="fs-5"><strong>Email:</strong> {{ member.email }}</p>
                     </div>
@@ -19,14 +19,14 @@
         </div>
     </section>
 
-    <!-- Painting Collection Section -->
+    <!-- Painting Collection -->
     <section class="mb-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card border-0 shadow-lg rounded-4" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc);">
+                <div class="card border-0 shadow-sm rounded-4 bg-white">
                     <div class="card-body text-center">
-                        <h2 class="h4 mb-3" style="color: #1e3a8a;">My Painting Collection</h2>
-                        <a href="{{ path('painting_collection_show', {'id': myPaintingCollection.id}) }}" class="btn btn-lg btn-dark">
+                        <h2 class="h4 mb-3 text-secondary">My Painting Collection</h2>
+                        <a href="{{ path('painting_collection_show', {'id': myPaintingCollection.id}) }}" class="btn btn-outline-primary btn-lg">
                             <i class="bi bi-brush me-2"></i> Explore Collection
                         </a>
                     </div>
@@ -35,26 +35,28 @@
         </div>
     </section>
 
-    <!-- My Galleries Section -->
+    <!-- Galleries -->
     <section class="mb-5">
         <div class="row">
             <div class="col-12">
                 <div class="text-center mb-4">
-                    <h2 class="h4" style="color: #0077b6;">My Galleries</h2>
+                    <h2 class="h4 text-success">My Galleries</h2>
                 </div>
                 <div class="row g-4">
                     {% for gallery in galleries %}
                         <div class="col-md-6 col-lg-4">
-                            <div class="card border-0 shadow-sm rounded-4" style="background: #f0f0f0;">
+                            <div class="card border-0 shadow-sm rounded-4 bg-light">
                                 <div class="card-body">
-                                    <h5 class="card-title text-dark">{{ gallery.description }}</h5>
+                                    <h5 class="card-title text-dark">
+                                        <strong>{{ gallery.description }}</strong>
+                                    </h5>
                                     <p class="mb-2">
                                         <span class="badge {{ gallery.published ? 'bg-success' : 'bg-danger' }}">
                                             {{ gallery.published ? 'Published' : 'Unpublished' }}
                                         </span>
                                     </p>
                                     <div class="d-flex justify-content-between">
-                                        <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}" class="btn btn-outline-primary btn-sm">
+                                        <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}" class="btn btn-outline-info btn-sm">
                                             <i class="bi bi-eye"></i> View
                                         </a>
                                         <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-outline-warning btn-sm">
@@ -74,9 +76,9 @@
         </div>
     </section>
 
-    <!-- Create New Gallery Button -->
+    <!-- Create New Gallery -->
     <section class="text-center">
-        <a href="{{ path('app_gallery_new', {'member_id': member.id}) }}" class="btn btn-lg btn-success shadow-sm" style="background: #a8df65; color: #1b4332;">
+        <a href="{{ path('app_gallery_new', {'member_id': member.id}) }}" class="btn btn-success btn-lg shadow-sm">
             <i class="bi bi-plus-circle me-2"></i> Create New Gallery
         </a>
     </section>

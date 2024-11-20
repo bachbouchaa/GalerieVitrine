@@ -34,16 +34,23 @@
             <ul class="list-group list-group-flush">
                 {% for painting in gallery.paintings %}
                     <li class="list-group-item d-flex align-items-center">
+                        <!-- Display Painting Image -->
                         {% if painting.imageName %}
-                            <img src="{{ vich_uploader_asset(painting, 'imageFile') }}" alt="{{ painting.title }}" class="img-thumbnail me-3 shadow-sm" style="width: 100px; height: auto; border-radius: 8px;">
+                            <img src="{{ vich_uploader_asset(painting, 'imageFile') }}" alt="{{ painting.title }}" class="img-thumbnail me-3 shadow-sm" style="width: 120px; height: auto; border-radius: 8px;">
                         {% else %}
-                            <div class="text-muted me-3 d-flex justify-content-center align-items-center" style="width: 100px; height: 100px; border: 1px dashed #ccc; border-radius: 8px;">
+                            <div class="text-muted me-3 d-flex justify-content-center align-items-center" style="width: 120px; height: 120px; border: 1px dashed #ccc; border-radius: 8px;">
                                 No Image
                             </div>
                         {% endif %}
-                        <a href="{{ path('app_gallery_painting_show', { 'gallery_id': gallery.id, 'painting_id': painting.id }) }}" class="text-decoration-none text-dark fs-6 fw-bold">
-                            {{ painting.title }}
-                        </a>
+
+                        <!-- Painting Details -->
+                        <div>
+                            <a href="{{ path('app_gallery_painting_show', { 'gallery_id': gallery.id, 'painting_id': painting.id }) }}" class="text-decoration-none text-dark fs-5 fw-bold">
+                                {{ painting.title }}
+                            </a>
+                            <p class="mb-0 text-muted">{{ painting.artist }} ({{ painting.creationYear }})</p>
+                            <small class="text-secondary">{{ painting.description }}</small>
+                        </div>
                     </li>
                 {% else %}
                     <li class="list-group-item text-muted text-center">No paintings available in this gallery.</li>
@@ -57,14 +64,18 @@
         <a href="{{ path('app_gallery_index') }}" class="btn btn-outline-secondary shadow-sm">
             <i class="bi bi-arrow-left me-2"></i> Back to List
         </a>
-        <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-outline-primary shadow-sm">
-            <i class="bi bi-pencil-square me-2"></i> Edit Gallery
-        </a>
+        {% if app.user and app.user == gallery.member %}
+            <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}" class="btn btn-outline-primary shadow-sm">
+                <i class="bi bi-pencil-square me-2"></i> Edit Gallery
+            </a>
+        {% endif %}
     </div>
 
     <!-- Delete Form -->
-    <div class="mt-3">
-        {{ include('gallery/_delete_form.html.twig') }}
-    </div>
+    {% if app.user and app.user == gallery.member %}
+        <div class="mt-3">
+            {{ include('gallery/_delete_form.html.twig') }}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
