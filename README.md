@@ -1,83 +1,95 @@
+# 🎨 Système de Gestion des Œuvres - Galerie Vitrine
 
-# Galerie Vitrine
-
-## Auteur
-- **Nermine Bacha** - Développeur principal.
-
-## Introduction
-Galerie Vitrine est une application web créée avec le framework Symfony, permettant de gérer une collection de tableaux de peinture. Les utilisateurs peuvent parcourir différentes collections d'art, consulter les détails de chaque tableau, et découvrir diverses périodes artistiques comme la Renaissance, l'Art Moderne, et l'Impressionnisme.
-
-## Fonctionnalités
-- Liste de toutes les collections de peintures.
-- Vue détaillée de chaque collection.
-- Vue détaillée de chaque tableau de peinture dans la collection.
-- Navigation entre les tableaux et leurs collections associées.
-
-## Prérequis
-Pour exécuter ce projet localement, vous devez avoir installé les éléments suivants :
-- [PHP 8.0+](https://www.php.net/)
-- [Composer](https://getcomposer.org/)
-- [Symfony CLI](https://symfony.com/download)
-- Une base de données compatible (SQLite)
-
-## Installation
-Suivez ces étapes pour cloner et exécuter le projet sur votre machine :
-
-1. **Cloner le Dépôt** :
-   ```bash
-   git clone https://github.com/bachbouchaa/GalerieVitrine.git
-   cd GalerieVitrine
-   ```
-
-2. **Installer les Dépendances** :
-   ```bash
-   composer install
-   ```
-
-3. **Configurer la Base de Données** :
-   - Copiez le fichier `.env` en `.env.local` et configurez vos informations de base de données :
-
-     ```dotenv
-     DATABASE_URL="sqlite:///%kernel.project_dir%/my_paintings.sqlite"
-     ```
-
-4. **Créer la Base de Données et le Schéma** :
-   ```bash
-   symfony console doctrine:database:create
-   symfony console doctrine:schema:create
-   ```
-
-5. **Charger les Fixtures** :
-   - Utilisez les fixtures fournies pour remplir la base de données avec des collections et des peintures d'exemple :
-
-   ```bash
-   symfony console doctrine:fixtures:load
-   ```
-
-6. **Lancer le Serveur de Développement** :
-   ```bash
-   symfony server:start
-   ```
-   Vous pouvez maintenant accéder à l'application en ouvrant `http://localhost:8000` dans votre navigateur.
-
-## Structure des Entités
-Le projet contient deux principales entités :
-- **MyPaintingCollection** : Représente une collection de tableaux de peinture (par exemple, Renaissance, Moderne).
-- **Painting** : Représente un tableau de peinture, avec des attributs comme le titre, l'artiste, l'année de création, la description, et le style.
-
-### Relations
-- **MyPaintingCollection** et **Painting** ont une relation **OneToMany**. Chaque collection peut contenir plusieurs tableaux.
-- Chaque tableau est associé à une collection, permettant de naviguer entre eux.
-
-## Routes Disponibles
-- **`/`** : Liste de toutes les collections de peinture.
-- **`painting/collection/{id}`** : Affiche les détails d'une collection spécifique.
-- **`/painting/{id}`** : Affiche les détails d'un tableau spécifique, avec un lien vers la collection à laquelle il appartient.
+## 📄 Description
+Bienvenue dans **Galerie Vitrine**, une application web conçue pour les passionnés d'art et les professionnels souhaitant organiser et explorer des collections d'œuvres d'art. Cette application propose des fonctionnalités pour créer, gérer et partager des galeries et des peintures.
 
 
-### Exemple d'Utilisation des Routes
-- Accéder à la liste des collections : `http://localhost:8000/`
-- Afficher une collection particulière : `http://localhost:8000/painting/collection/{id}`
-- Afficher les détails d'une peinture et revenir à la collection associée : `http://localhost:8000/painting/{id}`
 
+L'objectif principal de cette application est de fournir une plateforme intuitive où chaque utilisateur peut :
+- 🎨 **Créer** et **gérer** une PaintingCollection personnelles de paintings.
+- 🖼️ **Organiser** ses paintings dans des Galleries.
+- 🖼️ **Partager** ses galeries pour une visibilité publique ou les conserver privées.
+- 🔍 **Explorer** les galeries publiques des autres utilisateurs pour découvrir de nouvelles inspirations.
+---
+
+## 📝 Nomenclature
+- 🎨 **[Objet] = Painting** : Représente une œuvre d'art individuelle.
+- 📦 **[Inventaire] = MyPaintingCollection** : Désigne une collection personnelle d'œuvres.
+- 🖼️ **[Galerie] = Gallery** : Un sous-ensemble des collections d'un utilisateur, destiné à être mis en avant ou à garder en privé.
+
+---
+
+## 🔧 Modèle de données
+- Ajout des entités **Member**, **MyPaintingCollection**, **Gallery**, et **Painting**.
+- Gestion des relations :
+  - 🔗 **OneToOne (1-1)** : **Member** <-> **MyPaintingCollection** 
+  - 🔗 **OneToMany (1-N)** : **MyPaintingCollection** <-> **Painting**
+  - 🔗 **ManyToMany (M-N)** : **Gallery** <-> **Painting**
+
+L'application est développée avec **Symfony**, utilisant **Doctrine ORM** pour la persistance des données.
+
+---
+
+## 🛠️ Données de test et gestion des fixtures
+### Fixtures disponibles :
+- **UserFixtures :**
+  - Deux comptes d'utilisateur sont générés :
+    - **Nermine (ROLE_USER)** : Email `nermine@example.com` - Mot de passe `123456`.
+    - **Khalil (ROLE_ADMIN)** : Email `khalil@example.com` - Mot de passe `123456`.
+- **AppFixtures :**
+  - 📦 Des `MyPaintingCollections` associées à chaque utilisateur.
+  - 🎨 Plusieurs `Paintings` réalistes ajoutées dans chaque collection.
+  - 🖼️ Des `Galleries` avec des thèmes variés, intégrant certaines peintures.
+
+### Chargement des données de test :
+Les données de test sont chargées via la commande suivante :
+```bash
+symfony console doctrine:fixtures:load -n
+```
+
+---
+
+## 🚀 Fonctionnalités principales
+
+### 🎨 1 | Gestion des Collections :
+- **Consultation :** Chaque utilisateur peut voir sa propre collection (`MyPaintingCollection`) regroupant toutes ses peintures.
+- **Ajout et Édition :** Les utilisateurs peuvent ajouter de nouvelles peintures à leur collection via un formulaire interactif.
+- **Suppression :** Les peintures peuvent être facilement supprimées de la collection.
+
+### 🖼️ 2 | Gestion des Galeries :
+- **Création :** Organisez vos peintures en créant des galeries thématiques, publiques ou privées.
+- **Consultation :**
+  - Les galeries publiques sont accessibles à tous les utilisateurs connectés.
+  - Les galeries privées ne sont visibles que par leur propriétaire.
+  - Les administrateurs ont un accès illimité à toutes les galeries.
+- **Ajout de peintures :** Les utilisateurs peuvent inclure des peintures spécifiques dans une galerie.
+- **Édition et Suppression :** Modification des informations de la galerie ou suppression des galeries obsolètes.
+
+### 🔒 3 | Authentification et autorisations :
+- 👤 **Utilisateur standard (ROLE_USER) :**
+  - Accès limité à sa propre collection et à ses galeries.
+  - Peut explorer les galeries publiques des autres utilisateurs.
+- 🛡️ **Administrateur (ROLE_ADMIN) :**
+  - Accès total à toutes les données (Collections, Galeries, Peintures).
+  - Peut gérer les galeries ou collections des autres utilisateurs.
+
+### 🔗 4 | Navigation entre les entités :
+- Navigation intuitive grâce à des boutons clairs permettant de passer d'une galerie à une peinture ou à une collection.
+
+### 🎨 5 | Interface utilisateur :
+- Interface moderne et responsive grâce à **Bootstrap**.
+---
+
+## 🛠️ Comptes de test disponibles :
+Pour tester les fonctionnalités :
+- **Utilisateur standard :**
+  - Email : `nermine@example.com`
+  - Mot de passe : `123456`
+- **Administrateur :**
+  - Email : `khalil@example.com`
+  - Mot de passe : `123456`
+
+---
+
+**🎨 Galerie Vitrine** allie gestion fonctionnelle et esthétique pour offrir la meilleure expérience à ses utilisateurs.
 
